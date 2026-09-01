@@ -1,8 +1,8 @@
 @echo off
 setlocal EnableExtensions EnableDelayedExpansion
 
-:: Always work in the folder containing this batch file.
-cd /d "%~dp0"
+:: Search HTML files in the directory from which this batch file was started.
+:: The converter itself is still loaded from the batch file's directory below.
 
 :: Use the existing Anaconda Python installation.
 set "PYTHON=D:\Anaconda3\python.exe"
@@ -24,18 +24,33 @@ set "pattern=!defaultPattern!"
 
 :: Select the first matching HTML file, in the same order as "convert to html.bat".
 set "found="
-for /f "delims=" %%i in ('dir /b /a-d "*!pattern!*.html" 2^>nul') do (
-    set "found=%%i"
-    goto :default_found
+for /f "delims=" %%i in ('dir /b /a-d "*!pattern!*" 2^>nul') do (
+    if /i "%%~xi"==".html" (
+        set "found=%%i"
+        goto :default_found
+    )
 )
 
 :default_found
 if not defined found (
     echo No HTML file matching "!defaultPattern!" was found.
+    echo Searching for HTML files in the current directory...
+    set "found="
+    for /f "delims=" %%i in ('dir /b /a-d "*.html" 2^>nul') do (
+        set "found=%%i"
+        goto :fallback_found
+    )
     goto :manual_input
 )
 
 echo Default match: "!found!"
+choice /c YN /n /m "Use this HTML file? [Y/N] "
+if errorlevel 2 goto :manual_input
+if errorlevel 1 goto :run
+
+:fallback_found
+if not defined found goto :manual_input
+echo Fallback match: "!found!"
 choice /c YN /n /m "Use this HTML file? [Y/N] "
 if errorlevel 2 goto :manual_input
 if errorlevel 1 goto :run
@@ -49,9 +64,11 @@ if not defined pattern (
 )
 
 set "found="
-for /f "delims=" %%i in ('dir /b /a-d "*!pattern!*.html" 2^>nul') do (
-    set "found=%%i"
-    goto :manual_found
+for /f "delims=" %%i in ('dir /b /a-d "*!pattern!*" 2^>nul') do (
+    if /i "%%~xi"==".html" (
+        set "found=%%i"
+        goto :manual_found
+    )
 )
 
 :manual_found

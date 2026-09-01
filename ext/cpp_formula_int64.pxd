@@ -15,4 +15,4 @@ cdef lvec extended_gcd(int64 a, int64 b)
 
 cdef lvec tabulate_fac_mod(int64 n, int64 MOD)
 
-cdef lvec tabulate_fac_inv(lvec &fac, int64 MOD)
+cdef lvec tabulate_fac_inv(int64 n, int64 MOD, int64 facn=*)

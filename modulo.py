@@ -154,9 +154,9 @@ def sum_power_series_mod(i, n, m):
 def tabulate_inv_mod(n, MOD):
     """tabulate i^(-1) % MOD for 0 <= i <= n"""
 
-    invs = [1] * (n+1)
+    invs = [0, 1] + [0] * (n-1)
     for i in range(2, n+1):
-        invs[i] = inv_mod(i, MOD)
+        invs[i] = -(MOD // i) * invs[MOD % i] % MOD
     return invs
 
 
@@ -169,12 +169,18 @@ def tabulate_fac_mod(n, MOD):
     return facs
 
 
-def tabulate_fac_inv(facs, MOD):
+def tabulate_fac_inv(n, MOD, facn=-1):
     """tabulate i!^(-1) % MOD for 0 <= i <= n"""
 
-    facinvs = [1] * len(facs)
-    for i in range(2, len(facs)):
-        facinvs[i] = inv_mod(facs[i], MOD)
+    if facn == -1:
+        facn = 1
+        for m in range(2, n+1):
+            facn = facn * m % MOD
+
+    facinvs = [1] * (n+1)
+    facinvs[n] = inv_mod(facn, MOD)
+    for i in range(n, 2, -1):
+        facinvs[i-1] = facinvs[i] * i % MOD
     return facinvs
 
 

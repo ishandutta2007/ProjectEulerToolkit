@@ -28,15 +28,13 @@ Function list:
 @author: Jasper Wu
 """
 
-from math import gcd, sqrt
+from math import gcd, sqrt, isqrt
 from collections import deque
 
 try:
     from gmpy2 import is_square, iroot
-    isqrt = lambda x: int(_isqrt(int(x)))
 except:
     is_square = None
-    isqrt = None
     iroot = None
 
 
@@ -49,15 +47,6 @@ def _is_square(n):
 
 if is_square is None:
     is_square = _is_square
-
-
-def _isqrt(n):
-    """return integer square root of n"""
-
-    return int(n**0.5)
-
-if isqrt is None:
-    isqrt = _isqrt
 
 
 def _iroot(n, m):

@@ -27,7 +27,7 @@ Function list:
 import numpy as np
 from gmpy2 import invert
 
-from . formula import gcd, sqrt, is_square, legendre_symbol
+from . formula import gcd, isqrt, sqrt, is_square, legendre_symbol
 from . modulo import cprod
 
 from . import polynomial as poly
@@ -81,7 +81,7 @@ def square_modulo_prime_equation(n, p):
     if p == 2:
         return n
     elif is_square(n):
-        r = int(sqrt(n))
+        r = isqrt(n)
     elif legendre_symbol(n, p) != 1:
         raise ValueError("n is not a quadratic residue of p!")
     elif p % 4 == 3:
@@ -223,7 +223,7 @@ def generalized_pell_equation_base(d, n=1):
 
     if d <= 0:
         raise ValueError("D must be positive non-perfect-square integer!")
-    sd = int(sqrt(d))
+    sd = isqrt(d)
     if sd * sd == d:
         raise ValueError("D must be positive non-perfect-square integer!")
 
@@ -269,7 +269,7 @@ def generalized_pell_equation_base(d, n=1):
                         zdict[(f, m)] = [z]
         f += 1
 
-    f = int(sqrt(abs(n)))
+    f = isqrt(abs(n))
     if f*f == abs(n):
         zdict[(f, n//abs(n))] = [0]
 

@@ -60,13 +60,19 @@ cdef lvec tabulate_fac_mod(int64 n, int64 MOD):
     return fac
 
 
-cdef lvec tabulate_fac_inv(lvec &fac, int64 MOD):
+cdef lvec tabulate_fac_inv(int64 n, int64 MOD, int64 facn=-1):
     """return vector of (i!)^(-1) % MOD for 0 <= i <= n"""
 
     cdef:
         int64 m
-        lvec facinv = lvec(fac.size(), 1)
+        lvec facinv = lvec(n+1, 1)
 
-    for m in range(2, fac.size()):
-        facinv[m] = inv(fac[m], MOD)
+    if facn == -1:
+        facn = 1
+        for m in range(2, n+1):
+            facn = facn * m % MOD
+
+    facinv[n] = inv(facn, MOD)
+    for m in range(n, 2, -1):
+        facinv[m-1] = facinv[m] * m % MOD
     return facinv
